@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.Logging;
+﻿using System;
+using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using System.Collections.Generic;
 using System.Linq;
@@ -26,37 +27,48 @@ namespace WitnessReport.Services
 
         public async Task<Fugitive> GetMostWanted(string title)
         {
-            Fugitive wanted = new Fugitive();
+            Fugitive wanted = null;
+            var shouldIterate = true;
             var page = 1;
+
             var parameters = new Dictionary<string, string>
             {
                 { "page", $"{page}" },
                 { "title", title }
             };
 
-            while (page != 0)
+            try
             {
-                parameters.Remove("page");
-                parameters.Add("page", $"{page}");
-
-                var response = await _httpClient.Get<MostWantedFugitives>(_configuration.Endpoint, null, parameters);
-
-                wanted = response.Fugitives.FirstOrDefault(f =>
-                             f.Title.Equals(parameters.FirstOrDefault(kvp => kvp.Key == "title").Value)) ??
-                         response.Fugitives.FirstOrDefault(f =>
-                             f.Aliases.Contains(parameters.FirstOrDefault(kvp => kvp.Key == "title").Value));
-
-                if (response.Fugitives == null && !response.Fugitives.Any() || wanted != null)
+                while (shouldIterate)
                 {
-                    page = 0;
+                    parameters.Remove("page");
+                    parameters.Add("page", $"{page}");
+
+                    var response =
+                        await _httpClient.Get<MostWantedFugitives>(_configuration.Endpoint, null, parameters);
+
+                    var fullName = parameters.FirstOrDefault(kvp => kvp.Key == "title").Value;
+
+                    wanted = response.Fugitives.FirstOrDefault(f => f.Title.Equals(fullName)) ??
+                             response.Fugitives.FirstOrDefault(f => f.Aliases.Contains(fullName));
+
+                    if (response.Fugitives == null && !response.Fugitives.Any() || wanted != null)
+                    {
+                        shouldIterate = false;
+                    }
+                    else
+                    {
+                        page++;
+                    }
                 }
-                else
-                {
-                    page++;
-                }
+
+                return wanted;
             }
-
-            return wanted;
+            catch (Exception ex)
+            {
+                _logger.LogError($"Could not fetch most wanted fugitives: {ex}");
+                return null;
+            }
         }
     }
 }

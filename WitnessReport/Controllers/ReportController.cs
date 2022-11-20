@@ -41,9 +41,10 @@ namespace WitnessReport.Controllers
             if (fugitive != null)
             {
                 _fileGenerationService.GenerateFile(fugitive);
+                return new OkObjectResult("The file has been successfully generated in the C: directory.");
             }
 
-            return Ok();
+            return new BadRequestObjectResult("The file was not created!");
         }
     }
 }
