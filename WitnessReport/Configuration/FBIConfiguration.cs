@@ -1,6 +1,6 @@
 ﻿namespace WitnessReport.Configuration
 {
-    public class FBIConfiguration
+    public class FbiConfiguration
     {
         public string Endpoint { get; set; }
     }

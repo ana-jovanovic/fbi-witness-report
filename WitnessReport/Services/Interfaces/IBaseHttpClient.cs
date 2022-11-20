@@ -5,6 +5,6 @@ namespace WitnessReport.Services.Interfaces
 {
     public interface IBaseHttpClient
     {
-        Task<T> Get<T>(string url, IDictionary<string, string> headers = null);
+        Task<T> Get<T>(string url, IDictionary<string, string> headers = null, IDictionary<string, string> parameters = null);
     }
 }

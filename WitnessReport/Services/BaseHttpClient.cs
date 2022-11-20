@@ -11,9 +11,11 @@ namespace WitnessReport.Services
 {
     public class BaseHttpClient : IBaseHttpClient
     {
-        public async Task<T> Get<T>(string url, IDictionary<string, string> headers = null)
+        public async Task<T> Get<T>(string url,
+            IDictionary<string, string> headers = null,
+            IDictionary<string, string> parameters = null)
         {
-            var result = await SendRequest(HttpMethod.Get, url, null, headers).ConfigureAwait(false);
+            var result = await SendRequest(HttpMethod.Get, url, null, headers, parameters).ConfigureAwait(false);
             return await Deserialize<T>(result).ConfigureAwait(false);
         }
 
@@ -21,13 +23,14 @@ namespace WitnessReport.Services
             HttpMethod method,
             string url,
             object data = null,
-            IDictionary<string, string> headers = null)
+            IDictionary<string, string> headers = null,
+            IDictionary<string, string> parameters = null)
         {
             HttpResponseMessage result;
 
             using (var client = new HttpClient())
             {
-                var requestMessage = GetHttpRequestMessage(method, url, headers);
+                var requestMessage = GetHttpRequestMessage(method, url, headers, parameters);
                 requestMessage.Content = GetMessageContent(data);
 
                 result = await client.SendAsync(requestMessage);
@@ -40,22 +43,33 @@ namespace WitnessReport.Services
         private async Task<T> Deserialize<T>(HttpResponseMessage result)
         {
             var content = await result.Content.ReadAsStringAsync().ConfigureAwait(false);
-            return !string.IsNullOrEmpty(content) ? JsonConvert.DeserializeObject<T>(content) : default(T);
+            var obj = !string.IsNullOrEmpty(content) ? JsonConvert.DeserializeObject<T>(content) : default(T);
+            return obj;
         }
 
         private static HttpRequestMessage GetHttpRequestMessage(HttpMethod method,
             string resource,
-            IDictionary<string, string> headers = null)
+            IDictionary<string, string> headers = null,
+            IDictionary<string, string> parameters = null)
         {
             var message = new HttpRequestMessage(method, resource);
             message.Headers.Accept.Clear();
             message.Headers.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
 
-            if (headers == null) return message;
-
-            foreach (var (key, value) in headers)
+            if (headers != null)
             {
-                message.Headers.Add(key, value);
+                foreach (var (key, value) in headers)
+                {
+                    message.Headers.Add(key, value);
+                }
+            }
+
+            if (parameters != null)
+            {
+                foreach (var (key, value) in parameters)
+                {
+                    message.Properties.Add(key, value);
+                }
             }
 
             return message;

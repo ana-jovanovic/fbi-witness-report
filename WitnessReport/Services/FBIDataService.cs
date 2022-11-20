@@ -1,36 +1,62 @@
 ﻿using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
-using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using WitnessReport.Configuration;
+using WitnessReport.Models;
 using WitnessReport.Services.Interfaces;
 
 namespace WitnessReport.Services
 {
-    public class FBIDataService : IFBIDataService
+    public class FbiDataService : IFbiDataService
     {
-        private readonly IBaseHttpClient httpClient;
+        private readonly IBaseHttpClient _httpClient;
         private readonly ILogger _logger;
-        private readonly FBIConfiguration _configuration;
+        private readonly FbiConfiguration _configuration;
 
-        public FBIDataService(IBaseHttpClient httpClient,
-            ILogger<FBIDataService> logger,
-            IOptions<FBIConfiguration> configuration)
+        public FbiDataService(IBaseHttpClient httpClient,
+            ILogger<FbiDataService> logger,
+            IOptions<FbiConfiguration> configuration)
         {
+            _httpClient = httpClient;
             _logger = logger;
             _configuration = configuration.Value;
         }
 
-        public async Task GetMostWanted()
+        public async Task<Fugitive> GetMostWanted(string title)
         {
-            try
+            Fugitive wanted = new Fugitive();
+            var page = 1;
+            var parameters = new Dictionary<string, string>
             {
-                var hc = new System.Net.Http.HttpClient();
-            }
-            catch (Exception ex)
+                { "page", $"{page}" },
+                { "title", title }
+            };
+
+            while (page != 0)
             {
-                throw;
+                parameters.Remove("page");
+                parameters.Add("page", $"{page}");
+
+                var response = await _httpClient.Get<MostWantedFugitives>(_configuration.Endpoint, null, parameters);
+
+                wanted = response.Fugitives.FirstOrDefault(f =>
+                             f.Title.Equals(parameters.FirstOrDefault(kvp => kvp.Key == "title").Value)) ??
+                         response.Fugitives.FirstOrDefault(f =>
+                             f.Aliases.Contains(parameters.FirstOrDefault(kvp => kvp.Key == "title").Value));
+
+                if (response.Fugitives == null && !response.Fugitives.Any() || wanted != null)
+                {
+                    page = 0;
+                }
+                else
+                {
+                    page++;
+                }
             }
+
+            return wanted;
         }
     }
 }

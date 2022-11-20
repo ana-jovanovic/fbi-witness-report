@@ -36,11 +36,10 @@ namespace WitnessReport
             services.AddScoped<IGeolocationService, GeolocationService>();
             services.AddScoped<IPhoneNumberValidityService, PhoneNumberValidityService>();
             services.AddScoped<IBaseHttpClient, BaseHttpClient>();
-            services.AddScoped<IBaseHttpClient, BaseHttpClient>();
-            services.AddScoped<IFBIDataService, FBIDataService>();
+            services.AddScoped<IFbiDataService, FbiDataService>();
 
             services.Configure<IpGeolocationConfiguration>(Configuration.GetSection("IpGeolocationConfiguration"));
-            services.Configure<FBIConfiguration>(Configuration.GetSection("FBIConfiguration"));
+            services.Configure<FbiConfiguration>(Configuration.GetSection("FBIConfiguration"));
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

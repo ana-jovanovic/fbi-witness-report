@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.Threading.Tasks;
 using WitnessReport.Models;
 using WitnessReport.Services.Interfaces;
 
@@ -9,15 +10,18 @@ namespace WitnessReport.Controllers
     public class ReportController : Controller
     {
         private readonly IPhoneNumberValidityService _numberValidityService;
+        private readonly IFbiDataService _fbiDataService;
 
-        public ReportController(IPhoneNumberValidityService numberValidityService)
+        public ReportController(IPhoneNumberValidityService numberValidityService,
+            IFbiDataService fbiDataService)
         {
             _numberValidityService = numberValidityService;
+            _fbiDataService = fbiDataService;
         }
 
         [HttpGet]
         [AllowAnonymous]
-        public IActionResult Get([FromBody] RequestData data)
+        public async Task<IActionResult> Get([FromBody] RequestData data)
         {
             if (!ModelState.IsValid)
             {
@@ -29,9 +33,12 @@ namespace WitnessReport.Controllers
                 return new BadRequestObjectResult("Invalid phone number!");
             }
 
-            // check if the report exists on FBI api
+            var fugitive = await _fbiDataService.GetMostWanted(data.FullName);
 
-            // generate file
+            if (fugitive != null)
+            {
+                //generate file
+            }
 
             return Ok();
         }

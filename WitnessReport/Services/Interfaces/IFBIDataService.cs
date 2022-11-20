@@ -1,6 +1,10 @@
-﻿namespace WitnessReport.Services.Interfaces
+﻿using System.Threading.Tasks;
+using WitnessReport.Models;
+
+namespace WitnessReport.Services.Interfaces
 {
-    public interface IFBIDataService
+    public interface IFbiDataService
     {
+        Task<Fugitive> GetMostWanted(string title);
     }
 }
