@@ -1,6 +1,6 @@
-﻿using System;
-using Microsoft.Extensions.Logging;
+﻿using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -62,14 +62,11 @@ namespace WitnessReport.Services
 
                     if (wanted != null)
                     {
-                        pagesLeftToIterate = 0;
                         return wanted;
                     }
-                    else
-                    {
-                        pagesLeftToIterate--;
-                        page++;
-                    }
+
+                    pagesLeftToIterate--;
+                    page++;
 
                     firstIteration = false;
                 }
