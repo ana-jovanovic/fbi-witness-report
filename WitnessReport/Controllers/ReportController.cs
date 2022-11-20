@@ -1,9 +1,9 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using WitnessReports.Models;
-using WitnessReports.Services.Interfaces;
+using WitnessReport.Models;
+using WitnessReport.Services.Interfaces;
 
-namespace WitnessReports.Controllers
+namespace WitnessReport.Controllers
 {
     [Route("api/[controller]")]
     public class ReportController : Controller

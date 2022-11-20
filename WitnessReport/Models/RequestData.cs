@@ -1,6 +1,6 @@
 ﻿using Newtonsoft.Json;
 
-namespace WitnessReports.Models
+namespace WitnessReport.Models
 {
     public class RequestData
     {

@@ -1,7 +1,7 @@
 ﻿using FluentValidation;
-using WitnessReports.Models;
+using WitnessReport.Models;
 
-namespace WitnessReports.Validators
+namespace WitnessReports.Validator
 {
     public class RequestDataValidator : AbstractValidator<RequestData>
     {

@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Hosting;
 
-namespace WitnessReports
+namespace WitnessReport
 {
     public class Program
     {

@@ -1,4 +1,4 @@
-﻿namespace WitnessReports.Services.Interfaces
+﻿namespace WitnessReport.Services.Interfaces
 {
     public interface IIpAddressService
     {

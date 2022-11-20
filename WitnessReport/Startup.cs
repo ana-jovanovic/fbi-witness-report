@@ -7,10 +7,11 @@ using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using WitnessReports.Services;
-using WitnessReports.Services.Interfaces;
+using WitnessReport.Configuration;
+using WitnessReport.Services;
+using WitnessReport.Services.Interfaces;
 
-namespace WitnessReports
+namespace WitnessReport
 {
     public class Startup
     {
@@ -34,7 +35,12 @@ namespace WitnessReports
             services.AddScoped<IIpAddressService, IpAddressService>();
             services.AddScoped<IGeolocationService, GeolocationService>();
             services.AddScoped<IPhoneNumberValidityService, PhoneNumberValidityService>();
+            services.AddScoped<IBaseHttpClient, BaseHttpClient>();
+            services.AddScoped<IBaseHttpClient, BaseHttpClient>();
+            services.AddScoped<IFBIDataService, FBIDataService>();
 
+            services.Configure<IpGeolocationConfiguration>(Configuration.GetSection("IpGeolocationConfiguration"));
+            services.Configure<FBIConfiguration>(Configuration.GetSection("FBIConfiguration"));
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

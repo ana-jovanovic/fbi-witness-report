@@ -1,9 +1,9 @@
 ﻿using Microsoft.Extensions.Logging;
 using PhoneNumbers;
 using System;
-using WitnessReports.Services.Interfaces;
+using WitnessReport.Services.Interfaces;
 
-namespace WitnessReports.Services
+namespace WitnessReport.Services
 {
     public class PhoneNumberValidityService : IPhoneNumberValidityService
     {

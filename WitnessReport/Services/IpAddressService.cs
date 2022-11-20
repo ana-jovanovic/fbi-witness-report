@@ -2,9 +2,9 @@
 using System.Linq;
 using System.Net;
 using System.Net.Sockets;
-using WitnessReports.Services.Interfaces;
+using WitnessReport.Services.Interfaces;
 
-namespace WitnessReports.Services
+namespace WitnessReport.Services
 {
     public class IpAddressService : IIpAddressService
     {

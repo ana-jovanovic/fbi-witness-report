@@ -1,20 +1,25 @@
 ﻿using IPGeolocation;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 using System;
-using WitnessReports.Helpers;
-using WitnessReports.Services.Interfaces;
+using WitnessReport.Configuration;
+using WitnessReport.Services.Interfaces;
 
-namespace WitnessReports.Services
+namespace WitnessReport.Services
 {
     public class GeolocationService : IGeolocationService
     {
         private readonly IIpAddressService _ipAddressService;
         private readonly ILogger _logger;
+        private readonly IpGeolocationConfiguration _configuration;
 
-        public GeolocationService(IIpAddressService ipAddressService, ILogger<GeolocationService> logger)
+        public GeolocationService(IIpAddressService ipAddressService,
+            ILogger<GeolocationService> logger,
+            IOptions<IpGeolocationConfiguration> configuration)
         {
             _ipAddressService = ipAddressService;
             _logger = logger;
+            _configuration = configuration.Value;
         }
 
         public Geolocation GetGeolocation()
@@ -26,7 +31,7 @@ namespace WitnessReports.Services
                 return null;
             }
 
-            var geolocationApi = new IPGeolocationAPI(Constants.IpGeolocationApiKey);
+            var geolocationApi = new IPGeolocationAPI(_configuration.ApiKey);
 
             //var geolocationParams = new GeolocationParams();
             //geolocationParams.SetIPAddress("192.168.29.1");
