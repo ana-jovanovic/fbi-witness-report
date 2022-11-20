@@ -44,7 +44,7 @@ namespace WitnessReport.Controllers
                 return new OkObjectResult("The file has been successfully generated in the C: directory.");
             }
 
-            return new BadRequestObjectResult("The file was not created!");
+            return new BadRequestObjectResult("Could not generate the file!");
         }
     }
 }

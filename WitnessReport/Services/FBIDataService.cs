@@ -27,9 +27,10 @@ namespace WitnessReport.Services
 
         public async Task<Fugitive> GetMostWanted(string title)
         {
-            Fugitive wanted = null;
-            var shouldIterate = true;
+            Fugitive wanted = new Fugitive();
             var page = 1;
+            var pagesLeftToIterate = 1;
+            var firstIteration = true;
 
             var parameters = new Dictionary<string, string>
             {
@@ -39,7 +40,7 @@ namespace WitnessReport.Services
 
             try
             {
-                while (shouldIterate)
+                while (pagesLeftToIterate != 0)
                 {
                     parameters.Remove("page");
                     parameters.Add("page", $"{page}");
@@ -47,19 +48,30 @@ namespace WitnessReport.Services
                     var response =
                         await _httpClient.Get<MostWantedFugitives>(_configuration.Endpoint, null, parameters);
 
+                    var total = response.Total;
+                    var count = response.Fugitives.Count;
+                    if (count > 0 && firstIteration)
+                    {
+                        pagesLeftToIterate = total / count + (total % count != 0 ? 1 : 0) - 1;
+                    }
+
                     var fullName = parameters.FirstOrDefault(kvp => kvp.Key == "title").Value;
 
                     wanted = response.Fugitives.FirstOrDefault(f => f.Title.Equals(fullName)) ??
-                             response.Fugitives.FirstOrDefault(f => f.Aliases.Contains(fullName));
+                             response.Fugitives.FirstOrDefault(f => f.Aliases != null && f.Aliases.Any() && f.Aliases.Contains(fullName));
 
-                    if (response.Fugitives == null && !response.Fugitives.Any() || wanted != null)
+                    if (wanted != null)
                     {
-                        shouldIterate = false;
+                        pagesLeftToIterate = 0;
+                        return wanted;
                     }
                     else
                     {
+                        pagesLeftToIterate--;
                         page++;
                     }
+
+                    firstIteration = false;
                 }
 
                 return wanted;
