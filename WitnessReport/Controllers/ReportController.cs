@@ -11,12 +11,15 @@ namespace WitnessReport.Controllers
     {
         private readonly IPhoneNumberValidityService _numberValidityService;
         private readonly IFbiDataService _fbiDataService;
+        private readonly IFileGenerationService _fileGenerationService;
 
         public ReportController(IPhoneNumberValidityService numberValidityService,
-            IFbiDataService fbiDataService)
+            IFbiDataService fbiDataService,
+            IFileGenerationService fileGenerationService)
         {
             _numberValidityService = numberValidityService;
             _fbiDataService = fbiDataService;
+            _fileGenerationService = fileGenerationService;
         }
 
         [HttpGet]
@@ -37,7 +40,7 @@ namespace WitnessReport.Controllers
 
             if (fugitive != null)
             {
-                //generate file
+                _fileGenerationService.GenerateFile(fugitive);
             }
 
             return Ok();

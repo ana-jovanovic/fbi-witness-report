@@ -37,6 +37,7 @@ namespace WitnessReport
             services.AddScoped<IPhoneNumberValidityService, PhoneNumberValidityService>();
             services.AddScoped<IBaseHttpClient, BaseHttpClient>();
             services.AddScoped<IFbiDataService, FbiDataService>();
+            services.AddScoped<IFileGenerationService, FileGenerationService>();
 
             services.Configure<IpGeolocationConfiguration>(Configuration.GetSection("IpGeolocationConfiguration"));
             services.Configure<FbiConfiguration>(Configuration.GetSection("FBIConfiguration"));

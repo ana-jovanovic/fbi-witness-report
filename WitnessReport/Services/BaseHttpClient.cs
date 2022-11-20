@@ -43,8 +43,7 @@ namespace WitnessReport.Services
         private async Task<T> Deserialize<T>(HttpResponseMessage result)
         {
             var content = await result.Content.ReadAsStringAsync().ConfigureAwait(false);
-            var obj = !string.IsNullOrEmpty(content) ? JsonConvert.DeserializeObject<T>(content) : default(T);
-            return obj;
+            return !string.IsNullOrEmpty(content) ? JsonConvert.DeserializeObject<T>(content) : default(T);
         }
 
         private static HttpRequestMessage GetHttpRequestMessage(HttpMethod method,

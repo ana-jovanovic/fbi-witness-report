@@ -84,6 +84,21 @@ namespace WitnessReport.Models
 
         [JsonProperty("place_of_birth")]
         public string PlaceOfBirth { get; set; }
+
+        [JsonProperty("height_min")]
+        public string HeightMin { get; set; }
+
+        [JsonProperty("height_max")]
+        public string HeightMax { get; set; }
+
+        [JsonProperty("remarks")]
+        public string Remarks { get; set; }
+
+        [JsonProperty("ncic")]
+        public string NCIC { get; set; }
+
+        [JsonProperty("warning_message")]
+        public string WarningMessage { get; set; }
     }
 
     public class Coordinates
